@@ -95,15 +95,9 @@ namespace InfluxDB.Client.Api.Domain
         /// <param name="binSize">binSize (required).</param>
         public HeatmapViewProperties(string timeFormat = default(string), TypeEnum type = default(TypeEnum), List<DashboardQuery> queries = default(List<DashboardQuery>), List<string> colors = default(List<string>), ShapeEnum shape = default(ShapeEnum), string note = default(string), bool? showNoteWhenEmpty = default(bool?), string xColumn = default(string), string yColumn = default(string), List<decimal?> xDomain = default(List<decimal?>), List<decimal?> yDomain = default(List<decimal?>), string xAxisLabel = default(string), string yAxisLabel = default(string), string xPrefix = default(string), string xSuffix = default(string), string yPrefix = default(string), string ySuffix = default(string), decimal? binSize = default(decimal?)) : base()
         {
-            // to ensure "type" is required (not null)
-            if (type == null)
-            {
-                throw new InvalidDataException("type is a required property for HeatmapViewProperties and cannot be null");
-            }
-            else
-            {
-                this.Type = type;
-            }
+            this.Type = type;
+            this.Shape = shape;
+
             // to ensure "queries" is required (not null)
             if (queries == null)
             {
@@ -122,15 +116,7 @@ namespace InfluxDB.Client.Api.Domain
             {
                 this.Colors = colors;
             }
-            // to ensure "shape" is required (not null)
-            if (shape == null)
-            {
-                throw new InvalidDataException("shape is a required property for HeatmapViewProperties and cannot be null");
-            }
-            else
-            {
-                this.Shape = shape;
-            }
+            
             // to ensure "note" is required (not null)
             if (note == null)
             {
@@ -354,7 +340,7 @@ namespace InfluxDB.Client.Api.Domain
         /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
-        /// <returns>String presentation of the object</returns>
+        /// <returns>string presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -419,8 +405,7 @@ namespace InfluxDB.Client.Api.Domain
                 ) && base.Equals(input) && 
                 (
                     this.Type == input.Type ||
-                    (this.Type != null &&
-                    this.Type.Equals(input.Type))
+                    this.Type.Equals(input.Type)
                 ) && base.Equals(input) && 
                 (
                     this.Queries == input.Queries ||
@@ -434,8 +419,7 @@ namespace InfluxDB.Client.Api.Domain
                 ) && base.Equals(input) && 
                 (
                     this.Shape == input.Shape ||
-                    (this.Shape != null &&
-                    this.Shape.Equals(input.Shape))
+                    this.Shape.Equals(input.Shape)
                 ) && base.Equals(input) && 
                 (
                     this.Note == input.Note ||
@@ -515,14 +499,12 @@ namespace InfluxDB.Client.Api.Domain
                 int hashCode = base.GetHashCode();
                 if (this.TimeFormat != null)
                     hashCode = hashCode * 59 + this.TimeFormat.GetHashCode();
-                if (this.Type != null)
-                    hashCode = hashCode * 59 + this.Type.GetHashCode();
+                hashCode = hashCode * 59 + this.Type.GetHashCode();
                 if (this.Queries != null)
                     hashCode = hashCode * 59 + this.Queries.GetHashCode();
                 if (this.Colors != null)
                     hashCode = hashCode * 59 + this.Colors.GetHashCode();
-                if (this.Shape != null)
-                    hashCode = hashCode * 59 + this.Shape.GetHashCode();
+                hashCode = hashCode * 59 + this.Shape.GetHashCode();
                 if (this.Note != null)
                     hashCode = hashCode * 59 + this.Note.GetHashCode();
                 if (this.ShowNoteWhenEmpty != null)

@@ -61,15 +61,8 @@ namespace InfluxDB.Client.Api.Domain
         /// <param name="messageTemplate">messageTemplate (required).</param>
         public SlackNotificationRuleBase(TypeEnum type = default(TypeEnum), string channel = default(string), string messageTemplate = default(string)) : base()
         {
-            // to ensure "type" is required (not null)
-            if (type == null)
-            {
-                throw new InvalidDataException("type is a required property for SlackNotificationRuleBase and cannot be null");
-            }
-            else
-            {
-                this.Type = type;
-            }
+            this.Type = type;
+
             // to ensure "messageTemplate" is required (not null)
             if (messageTemplate == null)
             {
@@ -98,7 +91,7 @@ namespace InfluxDB.Client.Api.Domain
         /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
-        /// <returns>String presentation of the object</returns>
+        /// <returns>string presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -143,8 +136,7 @@ namespace InfluxDB.Client.Api.Domain
             return base.Equals(input) && 
                 (
                     this.Type == input.Type ||
-                    (this.Type != null &&
-                    this.Type.Equals(input.Type))
+                    this.Type.Equals(input.Type)
                 ) && base.Equals(input) && 
                 (
                     this.Channel == input.Channel ||
@@ -167,8 +159,7 @@ namespace InfluxDB.Client.Api.Domain
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = base.GetHashCode();
-                if (this.Type != null)
-                    hashCode = hashCode * 59 + this.Type.GetHashCode();
+                hashCode = hashCode * 59 + this.Type.GetHashCode();
                 if (this.Channel != null)
                     hashCode = hashCode * 59 + this.Channel.GetHashCode();
                 if (this.MessageTemplate != null)

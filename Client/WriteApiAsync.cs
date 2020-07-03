@@ -3,11 +3,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InfluxDB.Client.Api.Client;
 using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Api.Service;
 using InfluxDB.Client.Core;
 using InfluxDB.Client.Internal;
 using InfluxDB.Client.Writes;
+using RestSharp;
 
 namespace InfluxDB.Client
 {
@@ -37,11 +39,11 @@ namespace InfluxDB.Client
         ///     specifies the record in InfluxDB Line Protocol.
         ///     The <see cref="record" /> is considered as one batch unit.
         /// </param>
-        public async Task WriteRecordAsync(WritePrecision precision, string record)
+        public async Task<IRestResponse> WriteRecordAsync(WritePrecision precision, string record)
         {
             Arguments.CheckNotNull(precision, nameof(precision));
 
-            await WriteRecordAsync(_options.Bucket, _options.Org, precision, record);
+            return await WriteRecordAsync(_options.Bucket, _options.Org, precision, record);
         }
 
         /// <summary>
@@ -54,13 +56,13 @@ namespace InfluxDB.Client
         ///     specifies the record in InfluxDB Line Protocol.
         ///     The <see cref="record" /> is considered as one batch unit.
         /// </param>
-        public async Task WriteRecordAsync(string bucket, string org, WritePrecision precision, string record)
+        public async Task<IRestResponse> WriteRecordAsync(string bucket, string org, WritePrecision precision, string record)
         {
             Arguments.CheckNonEmptyString(bucket, nameof(bucket));
             Arguments.CheckNonEmptyString(org, nameof(org));
             Arguments.CheckNotNull(precision, nameof(precision));
 
-            await WriteRecordsAsync(bucket, org, precision, new List<string> {record});
+            return await WriteRecordsAsync(bucket, org, precision, new List<string> {record});
         }
 
         /// <summary>
@@ -68,11 +70,11 @@ namespace InfluxDB.Client
         /// </summary>
         /// <param name="precision">specifies the precision for the unix timestamps within the body line-protocol</param>
         /// <param name="records">specifies the record in InfluxDB Line Protocol</param>
-        public async Task WriteRecordsAsync(WritePrecision precision, List<string> records)
+        public async Task<IRestResponse> WriteRecordsAsync(WritePrecision precision, List<string> records)
         {
             Arguments.CheckNotNull(precision, nameof(precision));
 
-            await WriteRecordsAsync(_options.Bucket, _options.Org, precision, records);
+            return await WriteRecordsAsync(_options.Bucket, _options.Org, precision, records);
         }
 
         /// <summary>
@@ -82,7 +84,7 @@ namespace InfluxDB.Client
         /// <param name="org">specifies the destination organization for writes</param>
         /// <param name="precision">specifies the precision for the unix timestamps within the body line-protocol</param>
         /// <param name="records">specifies the record in InfluxDB Line Protocol</param>
-        public async Task WriteRecordsAsync(string bucket, string org, WritePrecision precision, List<string> records)
+        public async Task<IRestResponse> WriteRecordsAsync(string bucket, string org, WritePrecision precision, List<string> records)
         {
             Arguments.CheckNonEmptyString(bucket, nameof(bucket));
             Arguments.CheckNonEmptyString(org, nameof(org));
@@ -96,7 +98,7 @@ namespace InfluxDB.Client
                 list.Add(data);
             }
 
-            await WriteData(org, bucket, precision, list);
+            return await WriteData(org, bucket, precision, list);
         }
 
         /// <summary>
@@ -104,11 +106,11 @@ namespace InfluxDB.Client
         /// </summary>
         /// <param name="precision">specifies the precision for the unix timestamps within the body line-protocol</param>
         /// <param name="records">specifies the record in InfluxDB Line Protocol</param>
-        public async Task WriteRecordsAsync(WritePrecision precision, params string[] records)
+        public async Task<IRestResponse> WriteRecordsAsync(WritePrecision precision, params string[] records)
         {
             Arguments.CheckNotNull(precision, nameof(precision));
 
-            await WriteRecordsAsync(_options.Bucket, _options.Org, precision, records);
+            return await WriteRecordsAsync(_options.Bucket, _options.Org, precision, records);
         }
 
         /// <summary>
@@ -118,23 +120,23 @@ namespace InfluxDB.Client
         /// <param name="org">specifies the destination organization for writes</param>
         /// <param name="precision">specifies the precision for the unix timestamps within the body line-protocol</param>
         /// <param name="records">specifies the record in InfluxDB Line Protocol</param>
-        public async Task WriteRecordsAsync(string bucket, string org, WritePrecision precision,
+        public async Task<IRestResponse> WriteRecordsAsync(string bucket, string org, WritePrecision precision,
                         params string[] records)
         {
             Arguments.CheckNonEmptyString(bucket, nameof(bucket));
             Arguments.CheckNonEmptyString(org, nameof(org));
             Arguments.CheckNotNull(precision, nameof(precision));
 
-            await WriteRecordsAsync(bucket, org, precision, records.ToList());
+            return await WriteRecordsAsync(bucket, org, precision, records.ToList());
         }
 
         /// <summary>
         /// Write a Data point into specified bucket.
         /// </summary>
         /// <param name="point">specifies the Data point to write into bucket</param>
-        public async Task WritePointAsync(PointData point)
+        public async Task<IRestResponse> WritePointAsync(PointData point)
         {
-            await WritePointAsync(_options.Bucket, _options.Org, point);
+            return await WritePointAsync(_options.Bucket, _options.Org, point);
         }
 
         /// <summary>
@@ -143,26 +145,37 @@ namespace InfluxDB.Client
         /// <param name="bucket">specifies the destination bucket for writes</param>
         /// <param name="org">specifies the destination organization for writes</param>
         /// <param name="point">specifies the Data point to write into bucket</param>
-        public async Task WritePointAsync(string bucket, string org, PointData point)
+        public async Task<IRestResponse> WritePointAsync(string bucket, string org, PointData point)
         {
             Arguments.CheckNonEmptyString(bucket, nameof(bucket));
             Arguments.CheckNonEmptyString(org, nameof(org));
 
-            if (point == null) return;
+            if (point == null)
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "The write doesn't contain any data, skipping" };
+            }
 
-            BatchWriteData data = new BatchWritePoint(new BatchWriteOptions(bucket, org, 
-                            point.Precision), _options, point);
+            BatchWriteData data = new BatchWritePoint(new BatchWriteOptions(bucket, org, point.Precision), _options, point);
 
-            await WriteData(org, bucket, point.Precision, new List<BatchWriteData>{data});
+            return await WriteData(org, bucket, point.Precision, new List<BatchWriteData>{data});
         }
 
         /// <summary>
         /// Write Data points into specified bucket.
         /// </summary>
         /// <param name="points">specifies the Data points to write into bucket</param>
-        public async Task WritePointsAsync(List<PointData> points)
+        public async Task<IRestResponse> WritePointsAsync(List<PointData> points)
         {
-            await WritePointsAsync(_options.Bucket, _options.Org, points);
+            return await WritePointsAsync(_options.Bucket, _options.Org, points);
+        }
+
+        /// <summary>
+        /// Write Data points into specified bucket.
+        /// </summary>
+        /// <param name="points">specifies the Data points to write into bucket</param>
+        public async Task<IRestResponse> WritePointsAsync(params PointData[] points)
+        {
+            return await WritePointsAsync(_options.Bucket, _options.Org, points);
         }
 
         /// <summary>
@@ -171,21 +184,12 @@ namespace InfluxDB.Client
         /// <param name="bucket">specifies the destination bucket for writes</param>
         /// <param name="org">specifies the destination organization for writes</param>
         /// <param name="points">specifies the Data points to write into bucket</param>
-        public async Task WritePointsAsync(string bucket, string org, List<PointData> points)
+        public async Task<IRestResponse> WritePointsAsync(string bucket, string org, params PointData[] points)
         {
             Arguments.CheckNonEmptyString(bucket, nameof(bucket));
             Arguments.CheckNonEmptyString(org, nameof(org));
 
-            foreach (var point in points) await WritePointAsync(bucket, org, point);
-        }
-
-        /// <summary>
-        /// Write Data points into specified bucket.
-        /// </summary>
-        /// <param name="points">specifies the Data points to write into bucket</param>
-        public async Task WritePointsAsync(params PointData[] points)
-        {
-            await WritePointsAsync(_options.Bucket, _options.Org, points);
+            return await WritePointsAsync(bucket, org, points.ToList());
         }
 
         /// <summary>
@@ -194,12 +198,25 @@ namespace InfluxDB.Client
         /// <param name="bucket">specifies the destination bucket for writes</param>
         /// <param name="org">specifies the destination organization for writes</param>
         /// <param name="points">specifies the Data points to write into bucket</param>
-        public async Task WritePointsAsync(string bucket, string org, params PointData[] points)
+        public async Task<IRestResponse> WritePointsAsync(string bucket, string org, List<PointData> points)
         {
             Arguments.CheckNonEmptyString(bucket, nameof(bucket));
             Arguments.CheckNonEmptyString(org, nameof(org));
 
-            await WritePointsAsync(bucket, org, points.ToList());
+            if (points.Count == 0)
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "The write doesn't contain any data, skipping" };
+            }
+
+            List<BatchWriteData> list = new List<BatchWriteData>();
+
+            foreach (var point in points)
+            {
+                BatchWriteData data = new BatchWritePoint(new BatchWriteOptions(bucket, org, point.Precision), _options, point);
+                list.Add(data);
+            }
+
+            return await WriteData(org, bucket, points[0].Precision, list);
         }
 
         /// <summary>
@@ -208,11 +225,11 @@ namespace InfluxDB.Client
         /// <param name="precision">specifies the precision for the unix timestamps within the body line-protocol</param>
         /// <param name="measurement">specifies the Measurement to write into bucket</param>
         /// <typeparam name="TM">measurement type</typeparam>
-        public async Task WriteMeasurementAsync<TM>(WritePrecision precision, TM measurement)
+        public async Task<IRestResponse> WriteMeasurementAsync<TM>(WritePrecision precision, TM measurement)
         {
             Arguments.CheckNotNull(precision, nameof(precision));
 
-            await WriteMeasurementAsync(_options.Bucket, _options.Org, precision, measurement);
+            return await WriteMeasurementAsync(_options.Bucket, _options.Org, precision, measurement);
         }
 
         /// <summary>
@@ -223,15 +240,18 @@ namespace InfluxDB.Client
         /// <param name="precision">specifies the precision for the unix timestamps within the body line-protocol</param>
         /// <param name="measurement">specifies the Measurement to write into bucket</param>
         /// <typeparam name="TM">measurement type</typeparam>
-        public async Task WriteMeasurementAsync<TM>(string bucket, string org, WritePrecision precision, TM measurement)
+        public async Task<IRestResponse> WriteMeasurementAsync<TM>(string bucket, string org, WritePrecision precision, TM measurement)
         {
             Arguments.CheckNonEmptyString(bucket, nameof(bucket));
             Arguments.CheckNonEmptyString(org, nameof(org));
             Arguments.CheckNotNull(precision, nameof(precision));
 
-            if (measurement == null) return;
+            if (measurement == null)
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "The write doesn't contain any data, skipping" };
+            }
 
-            await WriteMeasurementsAsync(bucket, org, precision, new List<TM>() {measurement});
+            return await WriteMeasurementsAsync(bucket, org, precision, new List<TM>() {measurement});
         }
 
         /// <summary>
@@ -240,11 +260,24 @@ namespace InfluxDB.Client
         /// <param name="precision">specifies the precision for the unix timestamps within the body line-protocol</param>
         /// <param name="measurements">specifies Measurements to write into bucket</param>
         /// <typeparam name="TM">measurement type</typeparam>
-        public async Task WriteMeasurementsAsync<TM>(WritePrecision precision, List<TM> measurements)
+        public async Task<IRestResponse> WriteMeasurementsAsync<TM>(WritePrecision precision, List<TM> measurements)
         {
             Arguments.CheckNotNull(precision, nameof(precision));
 
-            await WriteMeasurementsAsync(_options.Bucket, _options.Org, precision, measurements);
+            return await WriteMeasurementsAsync(_options.Bucket, _options.Org, precision, measurements);
+        }
+
+        /// <summary>
+        /// Write Measurements into specified bucket.
+        /// </summary>
+        /// <param name="precision">specifies the precision for the unix timestamps within the body line-protocol</param>
+        /// <param name="measurements">specifies Measurements to write into bucket</param>
+        /// <typeparam name="TM">measurement type</typeparam>
+        public async Task<IRestResponse> WriteMeasurementsAsync<TM>(WritePrecision precision, params TM[] measurements)
+        {
+            Arguments.CheckNotNull(precision, nameof(precision));
+
+            return await WriteMeasurementsAsync(_options.Bucket, _options.Org, precision, measurements);
         }
 
         /// <summary>
@@ -255,13 +288,30 @@ namespace InfluxDB.Client
         /// <param name="precision">specifies the precision for the unix timestamps within the body line-protocol</param>
         /// <param name="measurements">specifies Measurements to write into bucket</param>
         /// <typeparam name="TM">measurement type</typeparam>
-        public async Task WriteMeasurementsAsync<TM>(string bucket, string org, WritePrecision precision,
+        public async Task<IRestResponse> WriteMeasurementsAsync<TM>(string bucket, string org, WritePrecision precision, params TM[] measurements)
+        {
+            Arguments.CheckNonEmptyString(bucket, nameof(bucket));
+            Arguments.CheckNonEmptyString(org, nameof(org));
+            Arguments.CheckNotNull(precision, nameof(precision));
+
+            return await WriteMeasurementsAsync(bucket, org, precision, measurements.ToList());
+        }
+
+        /// <summary>
+        /// Write Measurements into specified bucket.
+        /// </summary>
+        /// <param name="bucket">specifies the destination bucket for writes</param>
+        /// <param name="org">specifies the destination organization for writes</param>
+        /// <param name="precision">specifies the precision for the unix timestamps within the body line-protocol</param>
+        /// <param name="measurements">specifies Measurements to write into bucket</param>
+        /// <typeparam name="TM">measurement type</typeparam>
+        public async Task<IRestResponse> WriteMeasurementsAsync<TM>(string bucket, string org, WritePrecision precision,
                         List<TM> measurements)
         {
             Arguments.CheckNonEmptyString(bucket, nameof(bucket));
             Arguments.CheckNonEmptyString(org, nameof(org));
             Arguments.CheckNotNull(precision, nameof(precision));
-            
+
             List<BatchWriteData> list = new List<BatchWriteData>();
 
             foreach (var measurement in measurements)
@@ -272,41 +322,10 @@ namespace InfluxDB.Client
                 list.Add(data);
             }
 
-            await WriteData(org, bucket, precision, list);
+            return await WriteData(org, bucket, precision, list);
         }
 
-        /// <summary>
-        /// Write Measurements into specified bucket.
-        /// </summary>
-        /// <param name="precision">specifies the precision for the unix timestamps within the body line-protocol</param>
-        /// <param name="measurements">specifies Measurements to write into bucket</param>
-        /// <typeparam name="TM">measurement type</typeparam>
-        public async Task WriteMeasurementsAsync<TM>(WritePrecision precision, params TM[] measurements)
-        {
-            Arguments.CheckNotNull(precision, nameof(precision));
-
-            await WriteMeasurementsAsync(_options.Bucket, _options.Org, precision, measurements);
-        }
-
-        /// <summary>
-        /// Write Measurements into specified bucket.
-        /// </summary>
-        /// <param name="bucket">specifies the destination bucket for writes</param>
-        /// <param name="org">specifies the destination organization for writes</param>
-        /// <param name="precision">specifies the precision for the unix timestamps within the body line-protocol</param>
-        /// <param name="measurements">specifies Measurements to write into bucket</param>
-        /// <typeparam name="TM">measurement type</typeparam>
-        public async Task WriteMeasurementsAsync<TM>(string bucket, string org, WritePrecision precision,
-                        params TM[] measurements)
-        {
-            Arguments.CheckNonEmptyString(bucket, nameof(bucket));
-            Arguments.CheckNonEmptyString(org, nameof(org));
-            Arguments.CheckNotNull(precision, nameof(precision));
-
-            await WriteMeasurementsAsync(bucket, org, precision, measurements.ToList());
-        }
-
-        private async Task WriteData(string org, string bucket, WritePrecision precision, IEnumerable<BatchWriteData> data)
+        private async Task<IRestResponse> WriteData(string org, string bucket, WritePrecision precision, IEnumerable<BatchWriteData> data)
         {
             var sb = new StringBuilder("");
             
@@ -325,15 +344,13 @@ namespace InfluxDB.Client
             
             if (sb.Length == 0)
             {
-                Trace.WriteLine($"The writes: {data} doesn't contains any Line Protocol, skipping");
-                return;
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "The write doesn't contain any data, skipping" };
             }
-            
+
             // remove last \n
             sb.Remove(sb.Length - 1, 1);
 
-            await _service.PostWriteAsync(org, bucket, Encoding.UTF8.GetBytes(sb.ToString()), null , 
-                            "identity", "text/plain; charset=utf-8", null, "application/json", null, precision);
+            return await _service.PostWriteAsync(org, bucket, Encoding.UTF8.GetBytes(sb.ToString()), null, "identity", "text/plain; charset=utf-8", null, "application/json", null, precision);
         }
     }
 }

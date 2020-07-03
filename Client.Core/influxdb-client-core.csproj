@@ -2,41 +2,41 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-
-        <Description>The reference client that allows query, write and management (bucket, organization, users) for the InfluxDB 2.0.</Description>
+        
+        <Description>InfluxDB Client Core - exceptions, validations, REST client.</Description>
         <Authors>influxdb-client-csharp Contributors</Authors>
-        <AssemblyName>InfluxDB.Client</AssemblyName>
+        <AssemblyName>InfluxDB.Client.Core</AssemblyName>
         <VersionPrefix>1.10.0</VersionPrefix>
         <VersionSuffix>dev</VersionSuffix>
 
-        <PackageId>InfluxDB.Client</PackageId>
+        <PackageId>InfluxDB.Client.Core</PackageId>
         <PackageTags>influxdata;timeseries;flux;influxdb</PackageTags>
         <PackageIcon>influxdata.jpg</PackageIcon>
         <PackageIconUrl>https://raw.githubusercontent.com/influxdata/influxdb-client-csharp/master/Assets/influxdata.jpg</PackageIconUrl>
-        <PackageProjectUrl>https://github.com/influxdata/influxdb-client-csharp/tree/master/Client</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/influxdata/influxdb-client-csharp/tree/master/Client.Core</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/influxdata/influxdb-client-csharp</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
 
         <PackageReleaseNotes>https://github.com/influxdata/influxdb-client-csharp/blob/master/CHANGELOG.md</PackageReleaseNotes>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-        <RootNamespace>InfluxDB.Client</RootNamespace>
-
+        <RootNamespace>InfluxDB.Client.Core</RootNamespace>
+        
         <AssemblyOriginatorKeyFile>../Keys/Key.snk</AssemblyOriginatorKeyFile>
         <SignAssembly>true</SignAssembly>
     </PropertyGroup>
 
     <ItemGroup>
         <None Include="..\Assets\influxdata.jpg" Pack="true" PackagePath="" />
-        <ProjectReference Include="..\Client.Core\Client.Core.csproj" />
     </ItemGroup>
-
+    
     <ItemGroup>
-        <PackageReference Include="JsonSubTypes" Version="1.5.2" />
-        <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.1.1" />
-        <PackageReference Include="System.Collections.Immutable" Version="1.7.1" />
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
-        <PackageReference Include="System.Reactive" Version="4.1.2" />
+      <PackageReference Include="CsvHelper" Version="15.0.5" />
+      <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+      <PackageReference Include="NodaTime" Version="3.0.0" />
+      <PackageReference Include="NodaTime.Serialization.JsonNet" Version="2.3.0" />
+      <PackageReference Include="RestSharp" Version="106.11.4" />
+      <PackageReference Include="System.Net.Http" Version="4.3.4" />
     </ItemGroup>
-
+    
 </Project>

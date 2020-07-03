@@ -32,7 +32,7 @@ namespace InfluxDB.Client.Api.Client
         /// Gets the base path of the API client.
         /// </summary>
         /// <value>The base path</value>
-        String GetBasePath();
+        string GetBasePath();
         
         /// <summary>
         /// Provides a factory method hook for the creation of exceptions.

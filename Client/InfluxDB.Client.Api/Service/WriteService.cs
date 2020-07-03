@@ -42,7 +42,7 @@ namespace InfluxDB.Client.Api.Service
         /// <param name="orgID">Specifies the ID of the destination organization for writes. If both &#x60;orgID&#x60; and &#x60;org&#x60; are specified, &#x60;org&#x60; takes precedence. (optional)</param>
         /// <param name="precision">The precision for the unix timestamps within the body line-protocol. (optional)</param>
         /// <returns></returns>
-        void PostWrite (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null);
+        IRestResponse PostWrite (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null);
 
         /// <summary>
         /// Write time series data into InfluxDB
@@ -62,7 +62,7 @@ namespace InfluxDB.Client.Api.Service
         /// <param name="orgID">Specifies the ID of the destination organization for writes. If both &#x60;orgID&#x60; and &#x60;org&#x60; are specified, &#x60;org&#x60; takes precedence. (optional)</param>
         /// <param name="precision">The precision for the unix timestamps within the body line-protocol. (optional)</param>
         /// <returns>ApiResponse of Object(void)</returns>
-        ApiResponse<Object> PostWriteWithHttpInfo (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null);
+        IRestResponse PostWriteWithHttpInfo (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null);
         #endregion Synchronous Operations
         #region Asynchronous Operations
         /// <summary>
@@ -83,7 +83,7 @@ namespace InfluxDB.Client.Api.Service
         /// <param name="orgID">Specifies the ID of the destination organization for writes. If both &#x60;orgID&#x60; and &#x60;org&#x60; are specified, &#x60;org&#x60; takes precedence. (optional)</param>
         /// <param name="precision">The precision for the unix timestamps within the body line-protocol. (optional)</param>
         /// <returns>Task of void</returns>
-        System.Threading.Tasks.Task PostWriteAsync (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null);
+        System.Threading.Tasks.Task<IRestResponse> PostWriteAsync (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null);
 
         /// <summary>
         /// Write time series data into InfluxDB
@@ -103,7 +103,7 @@ namespace InfluxDB.Client.Api.Service
         /// <param name="orgID">Specifies the ID of the destination organization for writes. If both &#x60;orgID&#x60; and &#x60;org&#x60; are specified, &#x60;org&#x60; takes precedence. (optional)</param>
         /// <param name="precision">The precision for the unix timestamps within the body line-protocol. (optional)</param>
         /// <returns>Task of ApiResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostWriteAsyncWithHttpInfo (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null);
+        System.Threading.Tasks.Task<IRestResponse> PostWriteAsyncWithHttpInfo (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null);
         #endregion Asynchronous Operations
     }
 
@@ -118,7 +118,7 @@ namespace InfluxDB.Client.Api.Service
         /// Initializes a new instance of the <see cref="WriteService"/> class.
         /// </summary>
         /// <returns></returns>
-        public WriteService(String basePath)
+        public WriteService(string basePath)
         {
             this.Configuration = new InfluxDB.Client.Api.Client.Configuration { BasePath = basePath };
 
@@ -145,7 +145,7 @@ namespace InfluxDB.Client.Api.Service
         /// Gets the base path of the API client.
         /// </summary>
         /// <value>The base path</value>
-        public String GetBasePath()
+        public string GetBasePath()
         {
             return this.Configuration.ApiClient.RestClient.BaseUrl.ToString();
         }
@@ -155,7 +155,7 @@ namespace InfluxDB.Client.Api.Service
         /// </summary>
         /// <value>The base path</value>
         [Obsolete("SetBasePath is deprecated, please do 'Configuration.ApiClient = new ApiClient(\"http://new-path\")' instead.")]
-        public void SetBasePath(String basePath)
+        public void SetBasePath(string basePath)
         {
             // do nothing
         }
@@ -187,7 +187,7 @@ namespace InfluxDB.Client.Api.Service
         /// </summary>
         /// <returns>Dictionary of HTTP header</returns>
         [Obsolete("DefaultHeader is deprecated, please use Configuration.DefaultHeader instead.")]
-        public IDictionary<String, String> DefaultHeader()
+        public IDictionary<string, string> DefaultHeader()
         {
             return new ReadOnlyDictionary<string, string>(this.Configuration.DefaultHeader);
         }
@@ -219,9 +219,9 @@ namespace InfluxDB.Client.Api.Service
         /// <param name="orgID">Specifies the ID of the destination organization for writes. If both &#x60;orgID&#x60; and &#x60;org&#x60; are specified, &#x60;org&#x60; takes precedence. (optional)</param>
         /// <param name="precision">The precision for the unix timestamps within the body line-protocol. (optional)</param>
         /// <returns></returns>
-        public void PostWrite (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null)
+        public IRestResponse PostWrite (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null)
         {
-             PostWriteWithHttpInfo(org, bucket, body, zapTraceSpan, contentEncoding, contentType, contentLength, accept, orgID, precision);
+             return PostWriteWithHttpInfo(org, bucket, body, zapTraceSpan, contentEncoding, contentType, contentLength, accept, orgID, precision);
         }
 
         /// <summary>
@@ -239,31 +239,36 @@ namespace InfluxDB.Client.Api.Service
         /// <param name="orgID">Specifies the ID of the destination organization for writes. If both &#x60;orgID&#x60; and &#x60;org&#x60; are specified, &#x60;org&#x60; takes precedence. (optional)</param>
         /// <param name="precision">The precision for the unix timestamps within the body line-protocol. (optional)</param>
         /// <returns>ApiResponse of Object(void)</returns>
-        public ApiResponse<Object> PostWriteWithHttpInfo (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null)
+        public IRestResponse PostWriteWithHttpInfo (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null)
         {
-            // verify the required parameter 'org' is set
             if (org == null)
-                throw new ApiException(400, "Missing required parameter 'org' when calling WriteService->PostWrite");
-            // verify the required parameter 'bucket' is set
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'org' when calling WriteService->PostWrite" };
+            }
+
             if (bucket == null)
-                throw new ApiException(400, "Missing required parameter 'bucket' when calling WriteService->PostWrite");
-            // verify the required parameter 'body' is set
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'bucket' when calling WriteService->PostWrite" };
+            }
+
             if (body == null)
-                throw new ApiException(400, "Missing required parameter 'body' when calling WriteService->PostWrite");
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'body' when calling WriteService->PostWrite" };
+            }
 
             var localVarPath = "/api/v2/write";
-            var localVarPathParams = new Dictionary<String, String>();
-            var localVarQueryParams = new List<KeyValuePair<String, String>>();
-            var localVarHeaderParams = new Dictionary<String, String>(this.Configuration.DefaultHeader);
-            var localVarFormParams = new Dictionary<String, String>();
-            var localVarFileParams = new Dictionary<String, FileParameter>();
+            var localVarPathParams = new Dictionary<string, string>();
+            var localVarQueryParams = new List<KeyValuePair<string, string>>();
+            var localVarHeaderParams = new Dictionary<string, string>(this.Configuration.DefaultHeader);
+            var localVarFormParams = new Dictionary<string, string>();
+            var localVarFileParams = new Dictionary<string, FileParameter>();
             Object localVarPostBody = null;
 
             // to determine the Content-Type header
-            String[] localVarHttpContentTypes = new String[] {
+            string[] localVarHttpContentTypes = new string[] {
                 "text/plain"
             };
-            String localVarHttpContentType = this.Configuration.ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
+            string localVarHttpContentType = this.Configuration.ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
 
             if (org != null) localVarQueryParams.AddRange(this.Configuration.ApiClient.ParameterToKeyValuePairs("", "org", org)); // query parameter
             if (orgID != null) localVarQueryParams.AddRange(this.Configuration.ApiClient.ParameterToKeyValuePairs("", "orgID", orgID)); // query parameter
@@ -284,31 +289,19 @@ namespace InfluxDB.Client.Api.Service
             }
 
             // to determine the Accept header
-            String[] localVarHttpHeaderAccepts = new String[] {
+            string[] localVarHttpHeaderAccepts = new string[] {
                 "application/json"
             };
 
-            String localVarHttpHeaderAccept = this.Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
+            string localVarHttpHeaderAccept = this.Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
             if (localVarHttpHeaderAccept != null && !localVarHeaderParams.ContainsKey("Accept"))
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
 
 
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) this.Configuration.ApiClient.CallApi(localVarPath,
+            return (IRestResponse) this.Configuration.ApiClient.CallApi(localVarPath,
                 Method.POST, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
-
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
-
-            if (ExceptionFactory != null)
-            {
-                Exception exception = ExceptionFactory("PostWrite", localVarResponse);
-                if (exception != null) throw exception;
-            }
-
-            return new ApiResponse<Object>(localVarStatusCode,
-                localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                null);
         }
 
         /// <summary>
@@ -328,29 +321,34 @@ namespace InfluxDB.Client.Api.Service
         /// <returns>ApiResponse of Object(void)</returns>
         public async System.Threading.Tasks.Task<IRestResponse> PostWriteWithIRestResponseAsync (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null)
         {
-            // verify the required parameter 'org' is set
             if (org == null)
-                throw new ApiException(400, "Missing required parameter 'org' when calling WriteService->PostWrite");
-            // verify the required parameter 'bucket' is set
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'org' when calling WriteService->PostWrite" };
+            }
+
             if (bucket == null)
-                throw new ApiException(400, "Missing required parameter 'bucket' when calling WriteService->PostWrite");
-            // verify the required parameter 'body' is set
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'bucket' when calling WriteService->PostWrite" };
+            }
+
             if (body == null)
-                throw new ApiException(400, "Missing required parameter 'body' when calling WriteService->PostWrite");
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'body' when calling WriteService->PostWrite" };
+            }
 
             var localVarPath = "/api/v2/write";
-            var localVarPathParams = new Dictionary<String, String>();
-            var localVarQueryParams = new List<KeyValuePair<String, String>>();
-            var localVarHeaderParams = new Dictionary<String, String>(this.Configuration.DefaultHeader);
-            var localVarFormParams = new Dictionary<String, String>();
-            var localVarFileParams = new Dictionary<String, FileParameter>();
+            var localVarPathParams = new Dictionary<string, string>();
+            var localVarQueryParams = new List<KeyValuePair<string, string>>();
+            var localVarHeaderParams = new Dictionary<string, string>(this.Configuration.DefaultHeader);
+            var localVarFormParams = new Dictionary<string, string>();
+            var localVarFileParams = new Dictionary<string, FileParameter>();
             Object localVarPostBody = null;
 
             // to determine the Content-Type header
-            String[] localVarHttpContentTypes = new String[] {
+            string[] localVarHttpContentTypes = new string[] {
                 "text/plain"
             };
-            String localVarHttpContentType = this.Configuration.ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
+            string localVarHttpContentType = this.Configuration.ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
 
             if (org != null) localVarQueryParams.AddRange(this.Configuration.ApiClient.ParameterToKeyValuePairs("", "org", org)); // query parameter
             if (orgID != null) localVarQueryParams.AddRange(this.Configuration.ApiClient.ParameterToKeyValuePairs("", "orgID", orgID)); // query parameter
@@ -371,29 +369,18 @@ namespace InfluxDB.Client.Api.Service
             }
 
             // to determine the Accept header
-            String[] localVarHttpHeaderAccepts = new String[] {
+            string[] localVarHttpHeaderAccepts = new string[] {
                 "application/json"
             };
 
-            String localVarHttpHeaderAccept = this.Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
+            string localVarHttpHeaderAccept = this.Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
             if (localVarHttpHeaderAccept != null && !localVarHeaderParams.ContainsKey("Accept"))
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
 
-
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) await this.Configuration.ApiClient.CallApiAsync(localVarPath,
+            return (IRestResponse) await this.Configuration.ApiClient.CallApiAsync(localVarPath,
                 Method.POST, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
-
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
-
-            if (ExceptionFactory != null)
-            {
-                Exception exception = ExceptionFactory("PostWrite", localVarResponse);
-                if (exception != null) throw exception;
-            }
-
-            return localVarResponse;
         }
 
         /// <summary>
@@ -413,29 +400,34 @@ namespace InfluxDB.Client.Api.Service
         /// <returns>ApiResponse of Object(void)</returns>
         public IRestResponse PostWriteWithIRestResponse (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null)
         {
-            // verify the required parameter 'org' is set
             if (org == null)
-                throw new ApiException(400, "Missing required parameter 'org' when calling WriteService->PostWrite");
-            // verify the required parameter 'bucket' is set
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'org' when calling WriteService->PostWrite" };
+            }
+
             if (bucket == null)
-                throw new ApiException(400, "Missing required parameter 'bucket' when calling WriteService->PostWrite");
-            // verify the required parameter 'body' is set
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'bucket' when calling WriteService->PostWrite" };
+            }
+
             if (body == null)
-                throw new ApiException(400, "Missing required parameter 'body' when calling WriteService->PostWrite");
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'body' when calling WriteService->PostWrite" };
+            }
 
             var localVarPath = "/api/v2/write";
-            var localVarPathParams = new Dictionary<String, String>();
-            var localVarQueryParams = new List<KeyValuePair<String, String>>();
-            var localVarHeaderParams = new Dictionary<String, String>(this.Configuration.DefaultHeader);
-            var localVarFormParams = new Dictionary<String, String>();
-            var localVarFileParams = new Dictionary<String, FileParameter>();
+            var localVarPathParams = new Dictionary<string, string>();
+            var localVarQueryParams = new List<KeyValuePair<string, string>>();
+            var localVarHeaderParams = new Dictionary<string, string>(this.Configuration.DefaultHeader);
+            var localVarFormParams = new Dictionary<string, string>();
+            var localVarFileParams = new Dictionary<string, FileParameter>();
             Object localVarPostBody = null;
 
             // to determine the Content-Type header
-            String[] localVarHttpContentTypes = new String[] {
+            string[] localVarHttpContentTypes = new string[] {
                 "text/plain"
             };
-            String localVarHttpContentType = this.Configuration.ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
+            string localVarHttpContentType = this.Configuration.ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
 
             if (org != null) localVarQueryParams.AddRange(this.Configuration.ApiClient.ParameterToKeyValuePairs("", "org", org)); // query parameter
             if (orgID != null) localVarQueryParams.AddRange(this.Configuration.ApiClient.ParameterToKeyValuePairs("", "orgID", orgID)); // query parameter
@@ -456,29 +448,19 @@ namespace InfluxDB.Client.Api.Service
             }
 
             // to determine the Accept header
-            String[] localVarHttpHeaderAccepts = new String[] {
+            string[] localVarHttpHeaderAccepts = new string[] {
                 "application/json"
             };
 
-            String localVarHttpHeaderAccept = this.Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
+            string localVarHttpHeaderAccept = this.Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
             if (localVarHttpHeaderAccept != null && !localVarHeaderParams.ContainsKey("Accept"))
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
 
 
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) this.Configuration.ApiClient.CallApi(localVarPath,
+            return (IRestResponse) this.Configuration.ApiClient.CallApi(localVarPath,
                 Method.POST, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
-
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
-
-            if (ExceptionFactory != null)
-            {
-                Exception exception = ExceptionFactory("PostWrite", localVarResponse);
-                if (exception != null) throw exception;
-            }
-
-            return localVarResponse;
         }
         
         /// <summary>
@@ -496,31 +478,36 @@ namespace InfluxDB.Client.Api.Service
         /// <param name="orgID">Specifies the ID of the destination organization for writes. If both &#x60;orgID&#x60; and &#x60;org&#x60; are specified, &#x60;org&#x60; takes precedence. (optional)</param>
         /// <param name="precision">The precision for the unix timestamps within the body line-protocol. (optional)</param>
         /// <returns>ApiResponse of Object(void)</returns>
-        public RestRequest PostWriteWithRestRequest (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null)
+        public IRestRequest PostWriteWithRestRequest (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null)
         {
-            // verify the required parameter 'org' is set
             if (org == null)
-                throw new ApiException(400, "Missing required parameter 'org' when calling WriteService->PostWrite");
-            // verify the required parameter 'bucket' is set
+            {
+                return (IRestRequest)new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'org' when calling WriteService->PostWrite" };
+            }
+
             if (bucket == null)
-                throw new ApiException(400, "Missing required parameter 'bucket' when calling WriteService->PostWrite");
-            // verify the required parameter 'body' is set
+            {
+                return (IRestRequest)new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'bucket' when calling WriteService->PostWrite" };
+            }
+
             if (body == null)
-                throw new ApiException(400, "Missing required parameter 'body' when calling WriteService->PostWrite");
+            {
+                return (IRestRequest)new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'body' when calling WriteService->PostWrite" };
+            }
 
             var localVarPath = "/api/v2/write";
-            var localVarPathParams = new Dictionary<String, String>();
-            var localVarQueryParams = new List<KeyValuePair<String, String>>();
-            var localVarHeaderParams = new Dictionary<String, String>(this.Configuration.DefaultHeader);
-            var localVarFormParams = new Dictionary<String, String>();
-            var localVarFileParams = new Dictionary<String, FileParameter>();
+            var localVarPathParams = new Dictionary<string, string>();
+            var localVarQueryParams = new List<KeyValuePair<string, string>>();
+            var localVarHeaderParams = new Dictionary<string, string>(this.Configuration.DefaultHeader);
+            var localVarFormParams = new Dictionary<string, string>();
+            var localVarFileParams = new Dictionary<string, FileParameter>();
             Object localVarPostBody = null;
 
             // to determine the Content-Type header
-            String[] localVarHttpContentTypes = new String[] {
+            string[] localVarHttpContentTypes = new string[] {
                 "text/plain"
             };
-            String localVarHttpContentType = this.Configuration.ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
+            string localVarHttpContentType = this.Configuration.ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
 
             if (org != null) localVarQueryParams.AddRange(this.Configuration.ApiClient.ParameterToKeyValuePairs("", "org", org)); // query parameter
             if (orgID != null) localVarQueryParams.AddRange(this.Configuration.ApiClient.ParameterToKeyValuePairs("", "orgID", orgID)); // query parameter
@@ -541,14 +528,13 @@ namespace InfluxDB.Client.Api.Service
             }
 
             // to determine the Accept header
-            String[] localVarHttpHeaderAccepts = new String[] {
+            string[] localVarHttpHeaderAccepts = new string[] {
                 "application/json"
             };
 
-            String localVarHttpHeaderAccept = this.Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
+            string localVarHttpHeaderAccept = this.Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
             if (localVarHttpHeaderAccept != null && !localVarHeaderParams.ContainsKey("Accept"))
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
-
 
             return this.Configuration.ApiClient.PrepareRequest(localVarPath,
                 Method.POST, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
@@ -570,10 +556,9 @@ namespace InfluxDB.Client.Api.Service
         /// <param name="orgID">Specifies the ID of the destination organization for writes. If both &#x60;orgID&#x60; and &#x60;org&#x60; are specified, &#x60;org&#x60; takes precedence. (optional)</param>
         /// <param name="precision">The precision for the unix timestamps within the body line-protocol. (optional)</param>
         /// <returns>Task of void</returns>
-        public async System.Threading.Tasks.Task PostWriteAsync (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null)
+        public async System.Threading.Tasks.Task<IRestResponse> PostWriteAsync (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null)
         {
-             await PostWriteAsyncWithHttpInfo(org, bucket, body, zapTraceSpan, contentEncoding, contentType, contentLength, accept, orgID, precision);
-
+             return await PostWriteAsyncWithHttpInfo(org, bucket, body, zapTraceSpan, contentEncoding, contentType, contentLength, accept, orgID, precision);
         }
 
         /// <summary>
@@ -591,22 +576,10 @@ namespace InfluxDB.Client.Api.Service
         /// <param name="orgID">Specifies the ID of the destination organization for writes. If both &#x60;orgID&#x60; and &#x60;org&#x60; are specified, &#x60;org&#x60; takes precedence. (optional)</param>
         /// <param name="precision">The precision for the unix timestamps within the body line-protocol. (optional)</param>
         /// <returns>Task of ApiResponse</returns>
-        public async System.Threading.Tasks.Task<ApiResponse<Object>> PostWriteAsyncWithHttpInfo (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null)
+        public async System.Threading.Tasks.Task<IRestResponse> PostWriteAsyncWithHttpInfo (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null)
         {
             // make the HTTP request
-            IRestResponse localVarResponse = await PostWriteAsyncWithIRestResponse(org, bucket, body, zapTraceSpan, contentEncoding, contentType, contentLength, accept, orgID, precision);
-
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
-
-            if (ExceptionFactory != null)
-            {
-                Exception exception = ExceptionFactory("PostWrite", localVarResponse);
-                if (exception != null) throw exception;
-            }
-
-            return new ApiResponse<Object>(localVarStatusCode,
-                localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                null);
+            return await PostWriteAsyncWithIRestResponse(org, bucket, body, zapTraceSpan, contentEncoding, contentType, contentLength, accept, orgID, precision);
         }
             
         /// <summary>
@@ -626,29 +599,34 @@ namespace InfluxDB.Client.Api.Service
         /// <returns>Task of IRestResponse</returns>
         public async System.Threading.Tasks.Task<IRestResponse> PostWriteAsyncWithIRestResponse (string org, string bucket, byte[] body, string zapTraceSpan = null, string contentEncoding = null, string contentType = null, int? contentLength = null, string accept = null, string orgID = null, WritePrecision? precision = null)
         {
-            // verify the required parameter 'org' is set
             if (org == null)
-                throw new ApiException(400, "Missing required parameter 'org' when calling WriteService->PostWrite");
-            // verify the required parameter 'bucket' is set
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'org' when calling WriteService->PostWrite" };
+            }
+
             if (bucket == null)
-                throw new ApiException(400, "Missing required parameter 'bucket' when calling WriteService->PostWrite");
-            // verify the required parameter 'body' is set
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'bucket' when calling WriteService->PostWrite" };
+            }
+
             if (body == null)
-                throw new ApiException(400, "Missing required parameter 'body' when calling WriteService->PostWrite");
+            {
+                return new RestResponse() { StatusCode = System.Net.HttpStatusCode.BadRequest, ErrorMessage = "Missing required parameter 'body' when calling WriteService->PostWrite" };
+            }
 
             var localVarPath = "/api/v2/write";
-            var localVarPathParams = new Dictionary<String, String>();
-            var localVarQueryParams = new List<KeyValuePair<String, String>>();
-            var localVarHeaderParams = new Dictionary<String, String>(this.Configuration.DefaultHeader);
-            var localVarFormParams = new Dictionary<String, String>();
-            var localVarFileParams = new Dictionary<String, FileParameter>();
-            Object localVarPostBody = null;
+            var localVarPathParams = new Dictionary<string, string>();
+            var localVarQueryParams = new List<KeyValuePair<string, string>>();
+            var localVarHeaderParams = new Dictionary<string, string>(this.Configuration.DefaultHeader);
+            var localVarFormParams = new Dictionary<string, string>();
+            var localVarFileParams = new Dictionary<string, FileParameter>();
+            object localVarPostBody = null;
 
             // to determine the Content-Type header
-            String[] localVarHttpContentTypes = new String[] {
+            string[] localVarHttpContentTypes = new string[] {
                 "text/plain"
             };
-            String localVarHttpContentType = this.Configuration.ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
+            string localVarHttpContentType = this.Configuration.ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
 
             if (org != null) localVarQueryParams.AddRange(this.Configuration.ApiClient.ParameterToKeyValuePairs("", "org", org)); // query parameter
             if (orgID != null) localVarQueryParams.AddRange(this.Configuration.ApiClient.ParameterToKeyValuePairs("", "orgID", orgID)); // query parameter
@@ -669,28 +647,27 @@ namespace InfluxDB.Client.Api.Service
             }
 
             // to determine the Accept header
-            String[] localVarHttpHeaderAccepts = new String[] {
+            string[] localVarHttpHeaderAccepts = new string[] {
                 "application/json"
             };
 
-            String localVarHttpHeaderAccept = this.Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
+            string localVarHttpHeaderAccept = this.Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
+
             if (localVarHttpHeaderAccept != null && !localVarHeaderParams.ContainsKey("Accept"))
-                localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
-
-
-            // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) await this.Configuration.ApiClient.CallApiAsync(localVarPath,
-                Method.POST, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
-                localVarPathParams, localVarHttpContentType);
-
-            if (ExceptionFactory != null)
             {
-                Exception exception = ExceptionFactory("PostWrite", localVarResponse);
-                if (exception != null) throw exception;
+                localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
             }
 
-            return localVarResponse;
+            // make the HTTP request
+            return (IRestResponse) await this.Configuration.ApiClient.CallApiAsync(localVarPath,
+                                                                                    Method.POST,
+                                                                                    localVarQueryParams,
+                                                                                    localVarPostBody,
+                                                                                    localVarHeaderParams,
+                                                                                    localVarFormParams,
+                                                                                    localVarFileParams,
+                                                                                    localVarPathParams,
+                                                                                    localVarHttpContentType);
         }
-
     }
 }

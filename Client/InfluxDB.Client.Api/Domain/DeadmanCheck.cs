@@ -57,8 +57,8 @@ namespace InfluxDB.Client.Api.Domain
         /// Initializes a new instance of the <see cref="DeadmanCheck" /> class.
         /// </summary>
         /// <param name="type">type.</param>
-        /// <param name="timeSince">String duration before deadman triggers..</param>
-        /// <param name="staleTime">String duration for time that a series is considered stale and should not trigger deadman..</param>
+        /// <param name="timeSince">string duration before deadman triggers..</param>
+        /// <param name="staleTime">string duration for time that a series is considered stale and should not trigger deadman..</param>
         /// <param name="reportZero">If only zero values reported since time, trigger an alert.</param>
         /// <param name="level">level.</param>
         public DeadmanCheck(TypeEnum? type = default(TypeEnum?), string timeSince = default(string), string staleTime = default(string), bool? reportZero = default(bool?), CheckStatusLevel level = default(CheckStatusLevel), string name = default(string), string orgID = default(string), DashboardQuery query = default(DashboardQuery), TaskStatusType? status = default(TaskStatusType?), string every = default(string), string offset = default(string), List<CheckBaseTags> tags = default(List<CheckBaseTags>), string description = default(string), string statusMessageTemplate = default(string), List<Label> labels = default(List<Label>), CheckBaseLinks links = default(CheckBaseLinks)) : base(name, orgID, query, status, every, offset, tags, description, statusMessageTemplate, labels, links)
@@ -72,16 +72,16 @@ namespace InfluxDB.Client.Api.Domain
 
 
         /// <summary>
-        /// String duration before deadman triggers.
+        /// string duration before deadman triggers.
         /// </summary>
-        /// <value>String duration before deadman triggers.</value>
+        /// <value>string duration before deadman triggers.</value>
         [DataMember(Name="timeSince", EmitDefaultValue=false)]
         public string TimeSince { get; set; }
 
         /// <summary>
-        /// String duration for time that a series is considered stale and should not trigger deadman.
+        /// string duration for time that a series is considered stale and should not trigger deadman.
         /// </summary>
-        /// <value>String duration for time that a series is considered stale and should not trigger deadman.</value>
+        /// <value>string duration for time that a series is considered stale and should not trigger deadman.</value>
         [DataMember(Name="staleTime", EmitDefaultValue=false)]
         public string StaleTime { get; set; }
 
@@ -101,7 +101,7 @@ namespace InfluxDB.Client.Api.Domain
         /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
-        /// <returns>String presentation of the object</returns>
+        /// <returns>string presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -167,9 +167,7 @@ namespace InfluxDB.Client.Api.Domain
                     this.ReportZero.Equals(input.ReportZero))
                 ) && base.Equals(input) && 
                 (
-                    
-                    (this.Level != null &&
-                    this.Level.Equals(input.Level))
+                    this.Level.Equals(input.Level)
                 );
         }
 
@@ -190,8 +188,7 @@ namespace InfluxDB.Client.Api.Domain
                     hashCode = hashCode * 59 + this.StaleTime.GetHashCode();
                 if (this.ReportZero != null)
                     hashCode = hashCode * 59 + this.ReportZero.GetHashCode();
-                if (this.Level != null)
-                    hashCode = hashCode * 59 + this.Level.GetHashCode();
+                hashCode = hashCode * 59 + this.Level.GetHashCode();
                 return hashCode;
             }
         }

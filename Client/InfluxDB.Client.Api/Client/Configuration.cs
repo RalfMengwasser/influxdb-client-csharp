@@ -224,7 +224,7 @@ namespace InfluxDB.Client.Api.Client
             set => _apiClient = value;
         }
 
-        private String _basePath = null;
+        private string _basePath = null;
         /// <summary>
         /// Gets or sets the base path for API access.
         /// </summary>
@@ -425,9 +425,9 @@ namespace InfluxDB.Client.Api.Client
         /// <summary>
         /// Returns a string with essential information for debugging.
         /// </summary>
-        public static String ToDebugReport()
+        public static string ToDebugReport()
         {
-            String report = "C# SDK (InfluxDB.Client.Api) Debug Report:\n";
+            string report = "C# SDK (InfluxDB.Client.Api) Debug Report:\n";
             report += "    OS: " + System.Environment.OSVersion + "\n";
             report += "    .NET Framework Version: " + System.Environment.Version  + "\n";
             report += "    Version of the API: 0.1.0\n";

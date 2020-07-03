@@ -59,6 +59,8 @@ namespace InfluxDB.Client.Api.Domain
         /// <param name="links">links.</param>
         public NotificationRuleBase(string endpointID = default(string), string orgID = default(string), TaskStatusType status = default(TaskStatusType), string name = default(string), string sleepUntil = default(string), string every = default(string), string offset = default(string), string runbookLink = default(string), int? limitEvery = default(int?), int? limit = default(int?), List<TagRule> tagRules = default(List<TagRule>), string description = default(string), List<StatusRule> statusRules = default(List<StatusRule>), List<Label> labels = default(List<Label>), NotificationRuleBaseLinks links = default(NotificationRuleBaseLinks)) : base()
         {
+            this.Status = status;
+
             // to ensure "endpointID" is required (not null)
             if (endpointID == null)
             {
@@ -77,15 +79,7 @@ namespace InfluxDB.Client.Api.Domain
             {
                 this.OrgID = orgID;
             }
-            // to ensure "status" is required (not null)
-            if (status == null)
-            {
-                throw new InvalidDataException("status is a required property for NotificationRuleBase and cannot be null");
-            }
-            else
-            {
-                this.Status = status;
-            }
+
             // to ensure "name" is required (not null)
             if (name == null)
             {
@@ -246,7 +240,7 @@ namespace InfluxDB.Client.Api.Domain
         /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
-        /// <returns>String presentation of the object</returns>
+        /// <returns>string presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -337,8 +331,7 @@ namespace InfluxDB.Client.Api.Domain
                 ) && base.Equals(input) && 
                 (
                     this.Status == input.Status ||
-                    (this.Status != null &&
-                    this.Status.Equals(input.Status))
+                    this.Status.Equals(input.Status)
                 ) && base.Equals(input) && 
                 (
                     this.Name == input.Name ||
@@ -423,8 +416,7 @@ namespace InfluxDB.Client.Api.Domain
                     hashCode = hashCode * 59 + this.CreatedAt.GetHashCode();
                 if (this.UpdatedAt != null)
                     hashCode = hashCode * 59 + this.UpdatedAt.GetHashCode();
-                if (this.Status != null)
-                    hashCode = hashCode * 59 + this.Status.GetHashCode();
+                hashCode = hashCode * 59 + this.Status.GetHashCode();
                 if (this.Name != null)
                     hashCode = hashCode * 59 + this.Name.GetHashCode();
                 if (this.SleepUntil != null)

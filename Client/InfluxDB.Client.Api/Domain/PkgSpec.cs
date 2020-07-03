@@ -33,7 +33,7 @@ namespace InfluxDB.Client.Api.Domain
         /// Initializes a new instance of the <see cref="PkgSpec" /> class.
         /// </summary>
         /// <param name="resources">resources.</param>
-        public PkgSpec(List<Object> resources = default(List<Object>))
+        public PkgSpec(List<object> resources = default(List<object>))
         {
             this.Resources = resources;
         }
@@ -42,12 +42,12 @@ namespace InfluxDB.Client.Api.Domain
         /// Gets or Sets Resources
         /// </summary>
         [DataMember(Name="resources", EmitDefaultValue=false)]
-        public List<Object> Resources { get; set; }
+        public List<object> Resources { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
-        /// <returns>String presentation of the object</returns>
+        /// <returns>string presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();

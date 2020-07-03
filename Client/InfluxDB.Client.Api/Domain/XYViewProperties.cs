@@ -121,15 +121,8 @@ namespace InfluxDB.Client.Api.Domain
         /// <param name="geom">geom (required).</param>
         public XYViewProperties(string timeFormat = default(string), TypeEnum type = default(TypeEnum), List<DashboardQuery> queries = default(List<DashboardQuery>), List<DashboardColor> colors = default(List<DashboardColor>), ShapeEnum shape = default(ShapeEnum), string note = default(string), bool? showNoteWhenEmpty = default(bool?), Axes axes = default(Axes), Legend legend = default(Legend), string xColumn = default(string), string yColumn = default(string), bool? shadeBelow = default(bool?), PositionEnum position = default(PositionEnum), XYGeom geom = default(XYGeom)) : base()
         {
-            // to ensure "type" is required (not null)
-            if (type == null)
-            {
-                throw new InvalidDataException("type is a required property for XYViewProperties and cannot be null");
-            }
-            else
-            {
-                this.Type = type;
-            }
+            this.Type = type;
+
             // to ensure "queries" is required (not null)
             if (queries == null)
             {
@@ -148,15 +141,9 @@ namespace InfluxDB.Client.Api.Domain
             {
                 this.Colors = colors;
             }
-            // to ensure "shape" is required (not null)
-            if (shape == null)
-            {
-                throw new InvalidDataException("shape is a required property for XYViewProperties and cannot be null");
-            }
-            else
-            {
-                this.Shape = shape;
-            }
+            
+            this.Shape = shape;
+
             // to ensure "note" is required (not null)
             if (note == null)
             {
@@ -193,24 +180,9 @@ namespace InfluxDB.Client.Api.Domain
             {
                 this.Legend = legend;
             }
-            // to ensure "position" is required (not null)
-            if (position == null)
-            {
-                throw new InvalidDataException("position is a required property for XYViewProperties and cannot be null");
-            }
-            else
-            {
-                this.Position = position;
-            }
-            // to ensure "geom" is required (not null)
-            if (geom == null)
-            {
-                throw new InvalidDataException("geom is a required property for XYViewProperties and cannot be null");
-            }
-            else
-            {
-                this.Geom = geom;
-            }
+            
+            this.Position = position;
+            this.Geom = geom;
             this.TimeFormat = timeFormat;
             this.XColumn = xColumn;
             this.YColumn = yColumn;
@@ -286,7 +258,7 @@ namespace InfluxDB.Client.Api.Domain
         /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
-        /// <returns>String presentation of the object</returns>
+        /// <returns>string presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -347,8 +319,7 @@ namespace InfluxDB.Client.Api.Domain
                 ) && base.Equals(input) && 
                 (
                     this.Type == input.Type ||
-                    (this.Type != null &&
-                    this.Type.Equals(input.Type))
+                    this.Type.Equals(input.Type)
                 ) && base.Equals(input) && 
                 (
                     this.Queries == input.Queries ||
@@ -362,8 +333,7 @@ namespace InfluxDB.Client.Api.Domain
                 ) && base.Equals(input) && 
                 (
                     this.Shape == input.Shape ||
-                    (this.Shape != null &&
-                    this.Shape.Equals(input.Shape))
+                    this.Shape.Equals(input.Shape)
                 ) && base.Equals(input) && 
                 (
                     this.Note == input.Note ||
@@ -402,13 +372,11 @@ namespace InfluxDB.Client.Api.Domain
                 ) && base.Equals(input) && 
                 (
                     this.Position == input.Position ||
-                    (this.Position != null &&
-                    this.Position.Equals(input.Position))
+                    this.Position.Equals(input.Position)
                 ) && base.Equals(input) && 
                 (
                     this.Geom == input.Geom ||
-                    (this.Geom != null &&
-                    this.Geom.Equals(input.Geom))
+                    this.Geom.Equals(input.Geom)
                 );
         }
 
@@ -423,14 +391,12 @@ namespace InfluxDB.Client.Api.Domain
                 int hashCode = base.GetHashCode();
                 if (this.TimeFormat != null)
                     hashCode = hashCode * 59 + this.TimeFormat.GetHashCode();
-                if (this.Type != null)
-                    hashCode = hashCode * 59 + this.Type.GetHashCode();
+                hashCode = hashCode * 59 + this.Type.GetHashCode();
                 if (this.Queries != null)
                     hashCode = hashCode * 59 + this.Queries.GetHashCode();
                 if (this.Colors != null)
                     hashCode = hashCode * 59 + this.Colors.GetHashCode();
-                if (this.Shape != null)
-                    hashCode = hashCode * 59 + this.Shape.GetHashCode();
+                hashCode = hashCode * 59 + this.Shape.GetHashCode();
                 if (this.Note != null)
                     hashCode = hashCode * 59 + this.Note.GetHashCode();
                 if (this.ShowNoteWhenEmpty != null)
@@ -445,10 +411,8 @@ namespace InfluxDB.Client.Api.Domain
                     hashCode = hashCode * 59 + this.YColumn.GetHashCode();
                 if (this.ShadeBelow != null)
                     hashCode = hashCode * 59 + this.ShadeBelow.GetHashCode();
-                if (this.Position != null)
-                    hashCode = hashCode * 59 + this.Position.GetHashCode();
-                if (this.Geom != null)
-                    hashCode = hashCode * 59 + this.Geom.GetHashCode();
+                hashCode = hashCode * 59 + this.Position.GetHashCode();
+                hashCode = hashCode * 59 + this.Geom.GetHashCode();
                 return hashCode;
             }
         }

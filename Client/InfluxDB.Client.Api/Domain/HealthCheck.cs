@@ -79,15 +79,7 @@ namespace InfluxDB.Client.Api.Domain
             {
                 this.Name = name;
             }
-            // to ensure "status" is required (not null)
-            if (status == null)
-            {
-                throw new InvalidDataException("status is a required property for HealthCheck and cannot be null");
-            }
-            else
-            {
-                this.Status = status;
-            }
+            this.Status = status;
             this.Message = message;
             this.Checks = checks;
             this.Version = version;
@@ -128,7 +120,7 @@ namespace InfluxDB.Client.Api.Domain
         /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
-        /// <returns>String presentation of the object</returns>
+        /// <returns>string presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -190,8 +182,7 @@ namespace InfluxDB.Client.Api.Domain
                 ) && 
                 (
                     this.Status == input.Status ||
-                    (this.Status != null &&
-                    this.Status.Equals(input.Status))
+                    this.Status.Equals(input.Status)
                 ) && 
                 (
                     this.Version == input.Version ||
@@ -220,8 +211,7 @@ namespace InfluxDB.Client.Api.Domain
                     hashCode = hashCode * 59 + this.Message.GetHashCode();
                 if (this.Checks != null)
                     hashCode = hashCode * 59 + this.Checks.GetHashCode();
-                if (this.Status != null)
-                    hashCode = hashCode * 59 + this.Status.GetHashCode();
+                hashCode = hashCode * 59 + this.Status.GetHashCode();
                 if (this.Version != null)
                     hashCode = hashCode * 59 + this.Version.GetHashCode();
                 if (this.Commit != null)
